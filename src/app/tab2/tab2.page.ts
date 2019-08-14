@@ -13,5 +13,7 @@ export class Tab2Page {
   // abcd() {
   //   this.dice.before_roll(5);
   // }
+  click() {
 
+  }
 }
