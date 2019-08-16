@@ -231,21 +231,6 @@
         return ret;
     }
 
-    this.stringify_notation = function(nn) {
-        var dict = {}, notation = '';
-        for (var i in nn.set) 
-            if (!dict[nn.set[i]]) dict[nn.set[i]] = 1; else ++dict[nn.set[i]];
-        for (var i in dict) {
-            if (notation.length) notation += ' + ';
-            notation += (dict[i] > 1 ? dict[i] : '') + i;
-        }
-        if (nn.constant) {
-            if (nn.constant > 0) notation += ' + ' + nn.constant;
-            else notation += ' - ' + Math.abs(nn.constant);
-        }
-        return notation;
-    }
-
     var that = this;
 
     this.dice_box = function(container, dimentions) {
@@ -582,15 +567,6 @@
         }
     }
 
-    // this.dice_box.prototype.search_dice_by_mouse = function(ev) {
-    //     var m = $t.get_mouse_coords(ev);
-    //     var intersects = (new THREE.Raycaster(this.camera.position, 
-    //                 (new THREE.Vector3((m.x - this.cw) / this.aspect,
-    //                                    1 - (m.y - this.ch) / this.aspect, this.w / 9))
-    //                 .sub(this.camera.position).normalize())).intersectObjects(this.dices);
-    //     if (intersects.length) return intersects[0].object.userData;
-    // }
-
     this.dice_box.prototype.draw_selector = function() {
         this.clear();
         var step = this.w / 4.5;
@@ -637,30 +613,6 @@
         else roll();
     }
 
-    this.dice_box.prototype.bind_mouse = function(container, notation_getter, before_roll, after_roll) {
-        var box = this;
-        $t.bind(container, ['mousedown', 'touchstart'], function(ev) {
-            ev.preventDefault();
-            box.mouse_time = (new Date()).getTime();
-           // box.mouse_start = $t.get_mouse_coords(ev);
-        });
-        $t.bind(container, ['mouseup', 'touchend'], function(ev) {
-            if (box.rolling) return;
-            if (box.mouse_start == undefined) return;
-            ev.stopPropagation();
-            var m = $t.get_mouse_coords(ev);
-            var vector = { x: m.x - box.mouse_start.x, y: -(m.y - box.mouse_start.y) };
-            box.mouse_start = undefined;
-            var dist = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-            if (dist < Math.sqrt(box.w * box.h * 0.01)) return;
-            var time_int = (new Date()).getTime() - box.mouse_time;
-            if (time_int > 2000) time_int = 2000;
-            var boost = Math.sqrt((2500 - time_int) / 2500) * dist * 2;
-            prepare_rnd(function() {
-                throw_dices(box, vector, boost, dist, notation_getter, before_roll, after_roll);
-            });
-        });
-    }
 
     this.dice_box.prototype.bind_throw = function(button, notation_getter, before_roll, after_roll) {
         var box = this;
@@ -682,4 +634,3 @@
     }
 
 }).apply(teal.dice = teal.dice || {});
-

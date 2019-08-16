@@ -14,6 +14,7 @@ export class Tab2Page {
   //   this.dice.before_roll(5);
   // }
   click() {
-
+    window.localStorage.setItem('dice1', '2');
+    window.localStorage.setItem('dice2', '1');
   }
 }
